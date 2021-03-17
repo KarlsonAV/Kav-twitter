@@ -1,0 +1,7 @@
+.idea
+static
+staticfiles
+media
+docker-compose.yml
+Dockerfile
+Pipfile.lock
