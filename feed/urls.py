@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import FirstView
+from .views import FollowPostsView, PostDetailView
 
 
 urlpatterns = [
-    path('', FirstView.as_view(), name='feed'),
+    path('', FollowPostsView.as_view(), name='posts'),
+    path('<uuid:pk>/', PostDetailView.as_view(), name='post_detail')
 ]
