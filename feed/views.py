@@ -38,7 +38,10 @@ class PostDetailView(APIView):
     def post(self, request, pk, format=None):
         post = Post.objects.get(pk=pk)
         try:
-            Likes.objects.get(user=request.user, liked=True, post_connected=post)
+            like = Likes.objects.get(user=request.user, liked=True, post_connected=post)
+            if request.POST.get('liked'):
+                like.delete()
+                return Response(status=status.HTTP_205_RESET_CONTENT)
         except:
             if request.POST.get('liked'):
                 Likes.objects.create(user=request.user, liked=True, post_connected=post)
