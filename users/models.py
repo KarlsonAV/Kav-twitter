@@ -1,15 +1,23 @@
 from django.contrib.auth.models import AbstractUser
+
 from django.db import models
 from PIL import Image
 
 
 class User(AbstractUser):
-    pass
+
+    def save(self, *args, **kwargs):
+        created = not self.pk
+        super().save(*args, **kwargs)
+        if created:
+            Profile.objects.create(user=self)
+        return self
 
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(default='default-user-img-768x768.jpg', upload_to='users_profiles/')
+    image = models.ImageField(default='users_profiles/default-user-img-768x768.jpg', upload_to='users_profiles/')
+    status = models.TextField(max_length=150, null=True)
 
     def __str__(self):
         return f'{self.user.username} Profile'

@@ -1,19 +1,18 @@
 from django.contrib import admin
-from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
-from .models import Follow, Profile
+from .models import Follow, User, Profile
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 
-CustomUser = get_user_model()
+CustomUser = User
 
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ['email', 'username']
+    list_display = ['email', 'username', ]
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(Profile)
 admin.site.register(Follow)
+admin.site.register(Profile)

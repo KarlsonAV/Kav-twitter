@@ -1,5 +1,8 @@
+from django.shortcuts import HttpResponseRedirect
+from django.urls import reverse
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import permissions
 from .models import Post, Comment, Likes
 from users.models import User, Follow
 from django.utils import timezone
@@ -24,11 +27,12 @@ class FollowPostsView(APIView):
 
 
 class PostDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request, pk, format=None):
         qs = Post.objects.get(pk=pk)
         post = GenericPostsSerializer(qs).data
-        comments = [CommentsSerializer(instance=comment).data for comment in Comment.objects.filter(post_connected=Post.objects.get(pk=pk))]
+        comments = [CommentsSerializer(instance=comment).data for comment in Comment.objects.filter(post_connected=qs)]
         context = {
             'post': post,
             'comments': comments,
@@ -52,3 +56,15 @@ class PostDetailView(APIView):
             serializer.save(author=request.user, date_posted=timezone.now(), post_connected=post)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PostDeleteView(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get(self, request, pk, format=None):
+        data = Post.objects.get(pk=pk)
+        if data.author == request.user:
+            print('There')
+            data.delete()
+            return HttpResponseRedirect(reverse('posts'))
+        return HttpResponseRedirect(reverse('post_detail', kwargs={'pk': pk}))
