@@ -16,7 +16,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         ]
 
 
-class ChangeProfileSerializer(serializers.ModelSerializer):
+class UpdateProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile

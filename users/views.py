@@ -1,4 +1,5 @@
 from django.shortcuts import HttpResponseRedirect
+from django.urls import reverse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .permissions import IsAuthorOrReadOnly
@@ -6,7 +7,7 @@ from rest_framework import status
 from rest_framework import permissions
 from .models import User, Profile, Follow
 from feed.models import Post
-from .serializers import ProfileSerializer, FollowSerializer, ChangeProfileSerializer
+from .serializers import ProfileSerializer, FollowSerializer, UpdateProfileSerializer
 from feed.serializers import GenericPostsSerializer
 
 
@@ -40,21 +41,23 @@ class ProfileView(APIView):
         return HttpResponseRedirect(request.path)
 
 
-class ChangeProfileView(APIView):
+class UpdateProfileView(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
 
     def put(self, request, username, format=None):
         user = User.objects.get(username=username)
-        profile = Profile.objects.get(user=user)
-        data = request.data
-        profile.image = data['image']
-        if not profile.image:
-            profile.image = 'users_profiles/default-user-img-768x768.jpg'
-        profile.status = data['status']
-        profile.user = user
-        profile.save()
-        serializer = ChangeProfileSerializer(profile).data
-        return Response(serializer, status=status.HTTP_205_RESET_CONTENT)
+        if request.user == user:
+            profile = Profile.objects.get(user=user)
+            data = request.data
+            profile.image = data['image']
+            if not profile.image:
+                profile.image = 'users_profiles/default-user-img-768x768.jpg'
+            profile.status = data['status']
+            profile.user = user
+            profile.save()
+            serializer = UpdateProfileSerializer(profile).data
+            return Response(serializer, status=status.HTTP_205_RESET_CONTENT)
+        return HttpResponseRedirect(reverse('profile', kwargs={'username': username}))
 
 
 class FollowView(APIView):
