@@ -80,3 +80,5 @@ class FollowingView(APIView):
             'follow': follow,
         }
         return Response(context, status=status.HTTP_200_OK)
+
+

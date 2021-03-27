@@ -6,8 +6,8 @@ from rest_framework import permissions
 from .models import Post, Comment, Likes
 from users.models import User, Follow
 from django.utils import timezone
-from .serializers import GenericPostsSerializer, CommentsSerializer, CommentsCreateSerializer
-from rest_framework import status
+from .serializers import GenericPostsSerializer, CommentsSerializer, CommentsCreateSerializer, UserSearchSeializer
+from rest_framework import status, filters, generics
 
 
 class FollowPostsView(APIView):
@@ -68,3 +68,10 @@ class PostDeleteView(APIView):
             data.delete()
             return HttpResponseRedirect(reverse('posts'))
         return HttpResponseRedirect(reverse('post_detail', kwargs={'pk': pk}))
+
+
+class SearchView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSearchSeializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['username']

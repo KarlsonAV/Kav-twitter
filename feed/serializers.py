@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Post, Comment
+from users.models import User
 
 
 class GenericPostsSerializer(serializers.ModelSerializer):
@@ -36,4 +37,13 @@ class CommentsCreateSerializer(serializers.ModelSerializer):
         fields = [
             'content',
             'image',
+        ]
+
+
+class UserSearchSeializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = [
+            'username'
         ]
