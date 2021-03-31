@@ -30,5 +30,6 @@ urlpatterns = [
 
     # Local
     path('', include('feed.urls')),
-    path('profile/', include('users.urls'))
+    path('chat/', include('chat.urls', namespace='chat')),
+    path('profile/', include('users.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

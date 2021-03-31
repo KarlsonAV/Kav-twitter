@@ -11,6 +11,9 @@ django-rest-auth = "*"
 django-allauth = "==0.40.0"
 djangorestframework-jwt = "*"
 pillow = "==6.2.1"
+channels = "*"
+channels-redis = "*"
+selenium = "*"
 
 [dev-packages]
 

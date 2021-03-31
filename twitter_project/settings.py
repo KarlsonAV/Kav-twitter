@@ -47,11 +47,13 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'rest_auth.registration',
+    'channels',
 
 
     # Local
     'users.apps.UsersConfig',
     'feed.apps.FeedConfig',
+    'chat.apps.ChatConfig',
 ]
 
 MIDDLEWARE = [
@@ -83,6 +85,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'twitter_project.wsgi.application'
+ASGI_APPLICATION = 'twitter_project.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('redis', 6379)],
+        },
+    },
+}
+
 
 
 # Database
